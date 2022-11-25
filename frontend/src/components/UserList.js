@@ -13,6 +13,33 @@ export const UserList = () => {
     }
   };
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // Edit
+  const handleedit = async (user) => {
+    const userName = prompt("Enter your new name");
+    const userEmail = prompt("Enter your new email");
+
+    if (!userName || !userEmail) {
+      alert("Please enter name and email both");
+    } else {
+      const resp = await axios.put(`/editUser/${user._id}`, {
+        name: userName,
+        email: userEmail,
+      });
+      console.log(resp);
+    }
+  };
+
+  //Delete
+  const handleDelete = async (userId) => {
+    const resp = await axios.delete(`/deleteUser/${userId}`);
+
+    console.log(resp);
+  };
+
   return (
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto">
@@ -40,16 +67,29 @@ export const UserList = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="px-4 py-3">One</td>
-                <td className="px-4 py-3">Two</td>
-                <td className="px-4 py-3">
-                  <button className="hover:text-green-500">Edit</button>
-                </td>
-                <td className="px-4 py-3 text-lg text-gray-900">
-                  <button className="hover:text-red-500">Delete</button>
-                </td>
-              </tr>
+              {userData &&
+                userData.map((user) => (
+                  <tr>
+                    <td className="px-4 py-3">{user.name}</td>
+                    <td className="px-4 py-3">{user.email}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        className="hover:text-green-500"
+                        onClick={() => handleedit(user)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-lg text-gray-900">
+                      <button
+                        className="hover:text-red-500"
+                        onClick={() => handleDelete(user._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
